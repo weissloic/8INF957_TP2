@@ -1,0 +1,57 @@
+{
+    "version": 2,
+    "timeout": "3000ms",
+    "cache_ttl": "300s",
+    "output_encoding": "json",
+    "name": "krakend-tpHamid",
+    "port": 8080,
+    "extra_config":
+        {
+          "NoOpHTTPStatusHandler": true,
+          "github_com/devopsfaith/krakend-cors": {
+              "allow_methods": [
+                  "POST",
+                  "GET"
+              ],
+              "allow_headers": [
+                "Origin",
+                "Authorization",
+                "Content-Type"
+              ],
+              "expose_headers": [
+                "Content-Length"
+              ],
+              "allow_credentials": false,
+              "max_age": "12h"
+          }
+        },
+    "endpoints": [
+      {
+        "endpoint": "/telMeHello",
+        "method": "GET",
+        "backend": [
+            {
+                "url_pattern": "/helloworld",
+                "method": "GET",
+                "host": [
+                    "http://api1:8002"
+                ]
+            }
+        ]
+      },
+      {
+        "endpoint": "/giveMeWeather",
+        "method": "GET",
+        "backend": [
+            {
+                "url_pattern": "/weather",
+                "method": "GET",
+                "disable_host_sanitize": true,
+                "host": [
+                    "http://api1:8002"
+                ]
+            }
+        ]
+      }
+    ]
+}

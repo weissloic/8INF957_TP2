@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+
+  api1:
+    container_name: 'api1'
+    build:
+      context: ./API_ts
+    command: npm start
+    ports:
+      - "8002:8002"
+    volumes:
+      - .API_ts:/usr/src/app/api1
+      - /usr/src/app/api1/node_modules
+
+  krakend_gateway:
+    container_name: 'APIGateway'
+    image: devopsfaith/krakend:1.2.0
+    volumes:
+      - ./KrakenD:/etc/krakend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api1
+    restart: always
