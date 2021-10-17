@@ -1,56 +1,71 @@
 import pygame
 
+from food import *
+import concurrent.futures
+from concurrent.futures import as_completed
+
+
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+NUMBER_OF_DOTS = 300
+
 
 pygame.init()
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+dots = []
 
-display_width = 800
-display_height = 600
-
-gameDisplay = pygame.display.set_mode((display_width,display_height))
-pygame.display.set_caption('A bit Racey')
-
-black = (0, 0, 0)
-white = (255, 255, 255)
+crashed = False
 
 clock = pygame.time.Clock()
-crashed = False
-carImg = pygame.image.load('bird.png')
+font = pygame.font.SysFont(None, 100)
 
-test = [pygame.draw.circle(gameDisplay,black,(20,10),20),
-        pygame.draw.circle(gameDisplay,black,(30,10),20),
-        pygame.draw.circle(gameDisplay,black,(60,10),20)]
+time_delay = 1000
+timer_event = pygame.USEREVENT + 1
+pygame.time.set_timer(timer_event, time_delay)
 
-def car(x,y):
-    global test
+counter = 0
+countPoint = 0
+text = font.render(str(counter), True, (0, 128, 0))
 
-
-
-x =  (display_width * 0.45)
-y = (display_height * 0.8)
+values = [2,3,4,5]
+def square(n):
+    #print(n * n)
+    return n * n
 
 while not crashed:
+    clock.tick(60)
 
-    gameDisplay.fill(white)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        results = executor.map(square, values)
+    for result in results:
+        print(result)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             crashed = True
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
 
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:
                 x_cursor = pygame.mouse.get_pos()[0]
                 y_cursor = pygame.mouse.get_pos()[1]
-                print(x_cursor, y_cursor)
-                test.append(pygame.draw.circle(gameDisplay,black,(x_cursor,y_cursor),20))
+                dots.append(Food(x_cursor, y_cursor, screen))
+
+        elif event.type == timer_event:
+            for dot in dots:
+                text = font.render(str(dot.counter), True, (0, 128, 0))
+
+    screen.fill((255, 255, 255))
+    text_rect = text.get_rect(center = screen.get_rect().center)
+    screen.blit(text, text_rect)
+
+    countPoint = 0
+    for dot in dots:
+        countPoint += 1
+        dot.fire()
+        if dot.destroy:
+            dots.remove(dots[countPoint - 1])
+        dot.draw()
 
 
-
-    car(x,y)
-
-
-    pygame.display.update()
-    clock.tick(60)
-
-pygame.quit()
-quit()
+    pygame.display.flip()

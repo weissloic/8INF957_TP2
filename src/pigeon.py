@@ -4,5 +4,6 @@ class Pigeon:
         self.coordinateY = y
         self.isSleeping = False
 
-    def run(self):
+    def run(Food):
+
         print("test")
