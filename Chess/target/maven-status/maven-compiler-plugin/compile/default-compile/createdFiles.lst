@@ -1,0 +1,14 @@
+edu/uqac/aop/chess/agent/AiPlayer.class
+edu/uqac/aop/chess/Board.class
+edu/uqac/aop/chess/Chess.class
+edu/uqac/aop/chess/piece/Queen.class
+edu/uqac/aop/chess/piece/King.class
+edu/uqac/aop/chess/piece/Piece.class
+edu/uqac/aop/chess/piece/Bishop.class
+edu/uqac/aop/chess/agent/Player.class
+edu/uqac/aop/chess/piece/Pawn.class
+edu/uqac/aop/chess/agent/Move.class
+edu/uqac/aop/chess/agent/HumanPlayer.class
+edu/uqac/aop/chess/piece/Knight.class
+edu/uqac/aop/chess/Spot.class
+edu/uqac/aop/chess/piece/Rook.class
