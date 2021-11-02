@@ -35,7 +35,8 @@ public class Spot {
 	public Piece getPiece() {
 		return piece;
 	}
-	public void release(){
+
+	public void release() {
 		setPiece(null);
 		setOccupied(false);
 	}

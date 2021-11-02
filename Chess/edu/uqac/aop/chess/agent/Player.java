@@ -1,6 +1,7 @@
 package edu.uqac.aop.chess.agent;
 
 import edu.uqac.aop.chess.Board;
+import edu.uqac.aop.chess.agent.Move;
 
 public abstract class Player {
 	public static final int WHITE = 1;
@@ -9,7 +10,7 @@ public abstract class Player {
 	protected int Colour;
 	protected Board playGround;
 
-	public abstract boolean makeMove(Move mv);
+	public abstract boolean makeMove(Move mv, Board playGround);
 	public abstract Move makeMove();
 	
 	public int getColor(){
