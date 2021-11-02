@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import edu.uqac.aop.chess.agent.Move;
 import edu.uqac.aop.chess.Board;
+import edu.uqac.aop.chess.piece.Piece;
 
 
 public aspect test {
