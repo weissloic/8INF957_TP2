@@ -15,4 +15,14 @@ export class UserService {
         }).then(res => {console.log(res.data) ; return res.data}).catch(err => {console.log("error in fetWeather");console.log(err)});
     }
 
+    static async createUser() : Promise<any> {
+        return axios.get(`http://localhost:8083/user`,
+            {
+                params: {
+                    email: "toto",
+                    name: "toto",
+                    password: "toto"
+                }
+            }).then(res => {console.log(res.data) ; return res.data}).catch(err => {console.log("error in createUser");console.log(err)});
+    }
 }

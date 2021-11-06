@@ -52,6 +52,38 @@
                 ]
             }
         ]
+      },
+      {
+        "endpoint": "/createUser",
+        "method": "POST",
+        "output_encoding": "no-op",
+        "backend": [
+          {
+            "url_pattern": "/user",
+            "method": "POST",
+            "encoding": "no-op",
+            "disable_host_sanitize": true,
+            "host": [
+              "http://api2:8083"
+            ]
+          }
+        ]
+      },
+      {
+        "endpoint": "/createUserWithService",
+        "method": "POST",
+        "output_encoding": "no-op",
+        "backend": [
+          {
+            "url_pattern": "/createUser",
+            "method": "POST",
+            "encoding": "no-op",
+            "disable_host_sanitize": true,
+            "host": [
+              "http://api1:8002"
+            ]
+          }
+        ]
       }
     ]
 }

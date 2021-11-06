@@ -18,5 +18,6 @@ export class Routes {
          */
         app.route("/helloworld").get(UserController.HelloWorld);
         app.route("/weather").get(UserController.fetchData);
+        app.route("/createUser").post(UserController.createUser);
     }
 }

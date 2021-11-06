@@ -12,6 +12,15 @@ services:
       - .API_ts:/usr/src/app/api1
       - /usr/src/app/api1/node_modules
 
+  api2:
+    container_name: 'api2'
+    build:
+      dockerfile: Dockerfile
+      context: ./API_java
+    ports:
+      - "8083:8083"
+
+
   krakend_gateway:
     container_name: 'APIGateway'
     image: devopsfaith/krakend:1.2.0
