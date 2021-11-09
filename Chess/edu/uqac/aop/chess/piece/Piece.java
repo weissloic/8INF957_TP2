@@ -14,7 +14,7 @@ public abstract class Piece {
     	 setPlayer(player);
 	}
 	public int getPlayer() {
-             return player;
+		 return player;
      }
      public void setPlayer(int player) {
              this.player = player;

@@ -1,8 +1,12 @@
 package edu.uqac.aop.chess.agent;
 
 import edu.uqac.aop.chess.Board;
+import edu.uqac.aop.chess.agent.Player;
+import edu.uqac.aop.chess.agent.Move;
 
 public class HumanPlayer extends Player {
+
+	Board playGround;
 
 	public HumanPlayer(int arg, Board board) {
 		setColor(arg);

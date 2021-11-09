@@ -9,9 +9,10 @@ import edu.uqac.aop.chess.piece.Pawn;
 import edu.uqac.aop.chess.piece.Piece;
 import edu.uqac.aop.chess.piece.Queen;
 import edu.uqac.aop.chess.piece.Rook;
+import edu.uqac.aop.chess.Spot;
 
 public class Board {
-	private Spot[][] grid;
+	private final Spot[][] grid;
 	public static final int SIZE = 8; // size of board
 
 	public Board() {

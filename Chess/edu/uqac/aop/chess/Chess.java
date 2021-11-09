@@ -4,6 +4,7 @@ import edu.uqac.aop.chess.agent.AiPlayer;
 import edu.uqac.aop.chess.agent.HumanPlayer;
 import edu.uqac.aop.chess.agent.Move;
 import edu.uqac.aop.chess.agent.Player;
+import edu.uqac.aop.chess.Board;
 
 public class Chess {
 
