@@ -104,9 +104,9 @@ aspect test3 {
 
     private void isPlayerPieceHit(Move mv) {
         if (this.startingPiece.getPlayer() == this.endingPiece.getPlayer()) {
-/*            System.out.println(this.startingPiece.getPlayer());
-            System.out.println(this.endingPiece.getPlayer());
-            System.out.println("pièce au même joueur");*/
+//            System.out.println(this.startingPiece.getPlayer());
+//            System.out.println(this.endingPiece.getPlayer());
+            System.out.println("pièce au même joueur");
             mv.canMove = false;
         } else {
               mv.canMove = true;
