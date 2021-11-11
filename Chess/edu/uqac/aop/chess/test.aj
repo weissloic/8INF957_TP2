@@ -23,10 +23,10 @@ public aspect test {
 
     after() returning(Object r) : callDemoAspectPointCut() {
 
-        System.out.println("Return value: " + r.toString()); // getting return value
+        //System.out.println("Return value: " + r.toString()); // getting return value
 
         try {
-            FileWriter fw = new FileWriter("test", true);
+            FileWriter fw = new FileWriter("output.txt", true);
             BufferedWriter bw = new BufferedWriter(fw);
 
             if (this.counter == 0) {
@@ -38,7 +38,7 @@ public aspect test {
                 bw.write(dtf.format(now));
                 bw.newLine();
             }
-            bw.write(r.toString());
+            bw.write("Human player à joué " + r.toString());
             bw.newLine();
             bw.close();
             this.counter += 1;
@@ -49,14 +49,48 @@ public aspect test {
 }
 
 aspect test2 {
+    private int counter = 0;
+
+    pointcut callDemoAspectPointCut():
+            execution(* edu.uqac.aop.chess.agent.AiPlayer.makeMove());
+
+    after() returning(Object r) : callDemoAspectPointCut() {
+
+        //System.out.println("Return value: " + r.toString()); // getting return value
+
+        try {
+            FileWriter fw = new FileWriter("output.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            if (this.counter == 0) {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+                //System.out.println(dtf.format(now));
+                bw.write("\n====================================\n====================================\n\n");
+                bw.newLine();
+                bw.write(dtf.format(now));
+                bw.newLine();
+            }
+            bw.write("AiPlayer à joué : " + r.toString());
+            bw.newLine();
+            bw.close();
+            this.counter += 1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+aspect test3 {
 
     private Piece startingPiece;
     private Piece endingPiece;
     private Board playground;
+    private int player = 0;
 
 
     pointcut callDemoAspectPointCut(Move mv, Board playground):
-            (call(boolean edu.uqac.aop.chess.agent.HumanPlayer.makeMove(Move, Board)) && args(mv, playground));
+            (call(boolean edu.uqac.aop.chess.agent.Player.makeMove(Move, Board)) && args(mv, playground));
 
     private void checkIsLegal(Piece piece, Move mv) {
         if (!piece.isMoveLegal(mv)) {
@@ -81,17 +115,43 @@ aspect test2 {
     }
 
     private void isPlayerPiece(Move mv) {
-        if (this.startingPiece.getPlayer() == 0) {
-            System.out.println("Cette pièce t'appartient pas");
-            mv.canMove = false;
+
+
+        if (mv.human) {
+            if (this.startingPiece.getPlayer() == 0) {
+                System.out.println("Cette pièce t'appartient pas");
+                mv.canMove = false;
+            }
+        } else {
+            if (this.startingPiece.getPlayer() == 1) {
+                System.out.println("Cette pièce t'appartient pas");
+                mv.canMove = false;
+            }
         }
+
     }
 
-    private void checkInBoard(Move mv) {
-        if (mv.xF < 0 || mv.yF > 7) {
+    private boolean checkInBoard(Move mv) {
+
+        if ((mv.xI < 0 || mv.xI > 7) || (mv.yI < 0 || mv.yI > 7)) {
+            System.out.println("Cette pièce n'est pas dnas l'échéquier");
+            mv.canMove = false;
+            return false;
+        }
+
+        if ((mv.xF < 0 || mv.xF > 7) || (mv.yF < 0 || mv.yF > 7)) {
             System.out.println("Ce coup sort de l'échéquier");
             mv.canMove = false;
+            return false;
         }
+        return true;
+    }
+
+    private boolean isDiagonalMOve(Move mv) {
+        if (mv.xI != mv.xF)
+            return true;
+        else
+            return false;
     }
 
     private void checkPieceMovement(Move mv) {
@@ -106,36 +166,157 @@ aspect test2 {
             return;
         }
 
-        for(int x = mv.xI; x <= mv.xF; x++) {
-            for(int y = mv.yI + 1; y <= mv.yF - 1; y++) {
-//                if (playground.getGrid()[x][y].isOccupied() && playground.getGrid()[mv.xF][mv.yF].getPiece().getPlayer() == playground.getGrid()[mv.xI][mv.yI].getPiece().getPlayer()) {
-                    if (playground.getGrid()[x][y].isOccupied() ) {
+        if (Objects.equals(playground.getGrid()[mv.xI][mv.yI].getPiece().toString(), "P") ||
+                Objects.equals(playground.getGrid()[mv.xI][mv.yI].getPiece().toString(), "p"))
+        {
+            if (!playground.getGrid()[mv.xF][mv.yF].isOccupied() && isDiagonalMOve(mv)) {
+                System.out.println("Vous ne pouvez pas jouer ce coup avec le pion");
+                mv.canMove = false;
+                return;
+            }
+        }
 
-                    System.out.println("Vous êtes bloqués par une pièce");
-                    mv.canMove = false;
-                    return;
+        //if (mv.xI < mv.xF) {
+
+        if (mv.xI <= mv.xF && mv.yI <= mv.yF) {
+            for (int x = mv.xI; x <= mv.xF; x++) {
+                for (int y = mv.yI + 1; y <= mv.yF - 1; y++) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                 }
+            }
+        }
+        if (mv.xI <= mv.xF && mv.yI >= mv.yF) {
+            for (int x = mv.xI; x <= mv.xF && x >= 0; x++) {
+                for (int y = mv.yI - 1; y >= mv.yF + 1; y--) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                }
+            }
+//            return;
+
+        }
+        if (mv.xI >= mv.xF && mv.yI <= mv.yF) {
+            for (int x = mv.xI; x >= mv.xF; x--) {
+                for (int y = mv.yI + 1; y <= mv.yF - 1; y++) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
                 }
             }
         }
+        if (mv.xI >= mv.xF && mv.yI >= mv.yF) {
+            for (int x = mv.xI; x >= mv.xF; x--) {
+                for (int y = mv.yI - 1; y >= mv.yF + 1; y--) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+
+        //}
+        /*else {
+            for (int x = mv.xI; x >= mv.xF; x--) {
+                for (int y = mv.yI -1; y >= mv.yF - 1; y--) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+        /*if (mv.xI <= mv.xF && mv.yI < mv.yF) {
+
+            for (int x = mv.xI; x <= mv.xF; x++) {
+                for (int y = mv.yI + 1; y <= mv.yF - 1; y++) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+        /*if (mv.xI >= mv.xF && mv.yI < mv.yF) {
+
+            for (int x = mv.xI; x >= mv.xF; x--) {
+                for (int y = mv.yI + 1; y <= mv.yF - 1; y++) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                }
+            }
+        }*/
+
+        /*if (mv.xI <= mv.xF && mv.yI > mv.yF) {
+
+            for (int x = mv.xI; x <= mv.xF; x++) {
+                for (int y = mv.yI + 1; y >= mv.yF + 1; y--) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+/*        if (mv.xI >= mv.xF && mv.yI > mv.yF) {
+
+            for (int x = mv.xI; x >= mv.xF; x--) {
+                for (int y = mv.yI + 1; y >= mv.yF + 1; y--) {
+                    if (playground.getGrid()[x][y].isOccupied()) {
+
+                        System.out.println("Vous êtes bloqués par une pièce");
+                        mv.canMove = false;
+                        return;
+                    }
+                }
+            }
+        }*/
+
     }
 
     boolean around(Move mv, Board bd): callDemoAspectPointCut(mv, bd) {
         this.playground = bd;
         boolean result = false;
 
+        System.out.println("Move : " + mv.toString());
+
         if (mv == null) {
             System.out.println("Impossible de réaliser ce déplacement.");
         }
-        try {
-            checkInBoard(mv);
-        } catch (Exception e) {
-            System.out.println("Ce coup sort de l'échéquier");
-            mv.canMove = false;
+        if (!checkInBoard(mv)) {
+            return false;
         }
 
         if (playground.getGrid()[mv.xI][mv.yI].isOccupied()) {
             this.startingPiece = playground.getGrid()[mv.xI][mv.yI].getPiece();
-//            System.out.println(this.startingPiece.getPlayer());
             isPlayerPiece(mv);
             if (playground.getGrid()[mv.xF][mv.yF].isOccupied()) {
                 this.endingPiece = playground.getGrid()[mv.xF][mv.yF].getPiece();
@@ -143,11 +324,7 @@ aspect test2 {
             }
             checkIsLegal(this.startingPiece, mv);
             if (mv.canMove) {
-                System.out.println(mv.toString());
-                System.out.println(bd.toString());
                 checkPieceMovement(mv);
-
-                // Implémenter ici la fonction de gestion du non saut des pièces
             }
         }
         else {

@@ -45,7 +45,9 @@ public class AiPlayer extends Player {
 			iniY = Dies.nextInt(8);
 			finX = Dies.nextInt(8);
 			finY = Dies.nextInt(8);
-			mv = new Move(iniX, iniY, finX, finY);
+//			mv = new Move(iniX-'a', iniY-'1', finX - 'a', 	finY-'1');
+			mv = new Move(iniX,iniY, finX, finY);
+			mv.human = false;
 		} while (!makeMove(mv, this.playGround));
 
 		System.out.println("Votre coup? <" + mv.toString()+ ">");

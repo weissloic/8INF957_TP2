@@ -18,6 +18,7 @@ public class HumanPlayer extends Player {
 		// TODO Auto-generated method stub
 		//System.out.println(mv.canMove);
 		//if (mv.canMove) {
+		/// ajout de board playground pour avoir accès à tout l'échequié dans la fonction de l'aspectj
 			if(mv == null)
 				return false;
 			if(!playGround.getGrid()[mv.xI][mv.yI].isOccupied())
@@ -49,6 +50,7 @@ public class HumanPlayer extends Player {
 			ViderBuffer();
 
 			mv = new Move(initialX-'a', initialY-'1', finalX - 'a', 	finalY-'1');
+			mv.human = true;
 		}
 		while(!makeMove(mv, this.playGround));
 		return mv;
