@@ -12,7 +12,7 @@ export class UserController {
     }
 
     public static async createUser(req: Request, res: Response) : Promise<any> {
-        UserService.createUser().then(data => res.status(200).json(data)).catch(err => { console.log("error in createUser");})
+        UserService.createUser().then(data => res.status(200).json(data)).catch(err => { console.log("error in createUser controller");})
     }
 
 }

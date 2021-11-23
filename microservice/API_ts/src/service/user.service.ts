@@ -1,4 +1,3 @@
-import {Request, Response} from "express";
 import config from "../config"
 import axios from "axios"
 
@@ -16,13 +15,13 @@ export class UserService {
     }
 
     static async createUser() : Promise<any> {
-        return axios.get(`http://localhost:8083/user`,
+
+        return axios.post(`http://api2:8083/user`,
             {
-                params: {
                     email: "toto",
                     name: "toto",
                     password: "toto"
-                }
-            }).then(res => {console.log(res.data) ; return res.data}).catch(err => {console.log("error in createUser");console.log(err)});
+            }
+            ).then(res => {console.log(res.data) ; return res.data}).catch(err => {console.log("error in createUser request"); console.log(err)});
     }
 }
