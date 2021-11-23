@@ -23,8 +23,6 @@ public aspect test {
 
     after() returning(Object r) : callDemoAspectPointCut() {
 
-        //System.out.println("Return value: " + r.toString()); // getting return value
-
         try {
             FileWriter fw = new FileWriter("output.txt", true);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -32,7 +30,6 @@ public aspect test {
             if (this.counter == 0) {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
-                //System.out.println(dtf.format(now));
                 bw.write("\n====================================\n====================================\n\n");
                 bw.newLine();
                 bw.write(dtf.format(now));
@@ -55,8 +52,6 @@ aspect test2 {
             execution(* edu.uqac.aop.chess.agent.AiPlayer.makeMove());
 
     after() returning(Object r) : callDemoAspectPointCut() {
-
-        //System.out.println("Return value: " + r.toString()); // getting return value
 
         try {
             FileWriter fw = new FileWriter("output.txt", true);
@@ -87,6 +82,7 @@ aspect test3 {
     private Piece endingPiece;
     private Board playground;
     private int player = 0;
+    private boolean canMove = true;
 
 
     pointcut callDemoAspectPointCut(Move mv, Board playground):
@@ -104,13 +100,10 @@ aspect test3 {
 
     private void isPlayerPieceHit(Move mv) {
         if (this.startingPiece.getPlayer() == this.endingPiece.getPlayer()) {
-//            System.out.println(this.startingPiece.getPlayer());
-//            System.out.println(this.endingPiece.getPlayer());
             System.out.println("pièce au même joueur");
             mv.canMove = false;
         } else {
               mv.canMove = true;
-            //errorDetected = false;
         }
     }
 
@@ -155,11 +148,6 @@ aspect test3 {
     }
 
     private void checkPieceMovement(Move mv) {
-/*        System.out.println("Piece qui bouge : " + piece.toString() + "player : " + piece.getPlayer());
-        System.out.println("Coup : : x:" + mv.xI + "y:" +  mv.yI);
-        System.out.println("Coup finale : x:" + mv.xF + "y:" +  mv.yF);
-        System.out.println("Emplacement final  : " + playground.getGrid()[mv.xF][mv.yF].getPiece());
-*/
         if (Objects.equals(playground.getGrid()[mv.xI][mv.yI].getPiece().toString(), "C") ||
                 Objects.equals(playground.getGrid()[mv.xI][mv.yI].getPiece().toString(), "c"))
         {
@@ -235,8 +223,6 @@ aspect test3 {
     boolean around(Move mv, Board bd): callDemoAspectPointCut(mv, bd) {
         this.playground = bd;
         boolean result = false;
-
-        System.out.println("Move : " + mv.toString());
 
         if (mv == null) {
             System.out.println("Impossible de réaliser ce déplacement.");
